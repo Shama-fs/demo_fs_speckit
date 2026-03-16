@@ -26,20 +26,18 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-Goal
-Update .specify/memory/constitution.md so it:
-
-Uses simple English.
-Enforces FutureStandard core stack rules:
-
-Frontend → Next.js (App Router) + TypeScript (TSX) + TailwindCSS + shadcn/ui + src/ folder.
-BFF → FastAPI (async) with router / service / repository / client layers.
-Backend → FastAPI (async) with the same layered design.
-Database → PostgreSQL (default), or MongoDB with written justification, schemas, samples, indexes.
+## Goal
+1.Update .specify/memory/constitution.md so it:
+2.Uses simple English.
+3.Enforces FutureStandard core stack rules:
+    Frontend → Next.js (App Router) + TypeScript (TSX) +  TailwindCSS + shadcn/ui + src/ folder.
+    BFF → FastAPI (async) with router / service / repository / client layers.
+    Backend → FastAPI (async) with the same layered design.
+    Database → PostgreSQL (default), or MongoDB with written justification, schemas, samples, indexes.
 
 
-Provides an append‑only “Project‑Specific Additional Principles” section so teams can add extra rules per project without modifying base sections.
-Synchronizes related templates (spec/plan/tasks) to match these rules.
+4.Provides an append‑only “Project‑Specific Additional Principles” section so teams can add extra rules per project without modifying base sections.
+5.Synchronizes related templates (spec/plan/tasks) to match these rules.
 
 
 If .specify/memory/constitution.md does not exist, copy it from .specify/templates/constitution-template.md before editing.
