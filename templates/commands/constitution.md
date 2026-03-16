@@ -1,9 +1,20 @@
 ---
-description: Create or update the project constitution from interactive or provided principle inputs, ensuring all dependent templates stay in sync.
-handoffs: 
+description: Create or update the project constitution from interactive or provided inputs, enforce the FutureStandard core stack, and keep all dependent templates in sync.
+handoffs:
   - label: Build Specification
     agent: speckit.specify
     prompt: Implement the feature specification based on the updated constitution. I want to build...
+inputs:
+  help: |
+    Optional $ARGUMENTS you can pass in chat (plain text or YAML block):
+      - project_name: string
+      - ratified_on: YYYY-MM-DD (if unknown, leave blank; tool will TODO it)
+      - add_principles:
+          - title: string
+            details: string (bullets or paragraph)
+      - db_choice: postgresql | mongodb  (default: postgresql)
+      - db_reason: string (if mongodb is selected, REQUIRED)
+      - keep_comments: true|false (default: false)
 ---
 
 ## User Input
@@ -11,74 +22,230 @@ handoffs:
 ```text
 $ARGUMENTS
 ```
-
 You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-You are updating the project constitution at `.specify/memory/constitution.md`. This file is a TEMPLATE containing placeholder tokens in square brackets (e.g. `[PROJECT_NAME]`, `[PRINCIPLE_1_NAME]`). Your job is to (a) collect/derive concrete values, (b) fill the template precisely, and (c) propagate any amendments across dependent artifacts.
+Goal
+Update .specify/memory/constitution.md so it:
 
-**Note**: If `.specify/memory/constitution.md` does not exist yet, it should have been initialized from `.specify/templates/constitution-template.md` during project setup. If it's missing, copy the template first.
+Uses simple English.
+Enforces FutureStandard core stack rules:
 
-Follow this execution flow:
+Frontend → Next.js (App Router) + TypeScript (TSX) + TailwindCSS + shadcn/ui + src/ folder.
+BFF → FastAPI (async) with router / service / repository / client layers.
+Backend → FastAPI (async) with the same layered design.
+Database → PostgreSQL (default), or MongoDB with written justification, schemas, samples, indexes.
 
-1. Load the existing constitution at `.specify/memory/constitution.md`.
-   - Identify every placeholder token of the form `[ALL_CAPS_IDENTIFIER]`.
-   **IMPORTANT**: The user might require less or more principles than the ones used in the template. If a number is specified, respect that - follow the general template. You will update the doc accordingly.
 
-2. Collect/derive values for placeholders:
-   - If user input (conversation) supplies a value, use it.
-   - Otherwise infer from existing repo context (README, docs, prior constitution versions if embedded).
-   - For governance dates: `RATIFICATION_DATE` is the original adoption date (if unknown ask or mark TODO), `LAST_AMENDED_DATE` is today if changes are made, otherwise keep previous.
-   - `CONSTITUTION_VERSION` must increment according to semantic versioning rules:
-     - MAJOR: Backward incompatible governance/principle removals or redefinitions.
-     - MINOR: New principle/section added or materially expanded guidance.
-     - PATCH: Clarifications, wording, typo fixes, non-semantic refinements.
-   - If version bump type ambiguous, propose reasoning before finalizing.
+Provides an append‑only “Project‑Specific Additional Principles” section so teams can add extra rules per project without modifying base sections.
+Synchronizes related templates (spec/plan/tasks) to match these rules.
 
-3. Draft the updated constitution content:
-   - Replace every placeholder with concrete text (no bracketed tokens left except intentionally retained template slots that the project has chosen not to define yet—explicitly justify any left).
-   - Preserve heading hierarchy and comments can be removed once replaced unless they still add clarifying guidance.
-   - Ensure each Principle section: succinct name line, paragraph (or bullet list) capturing non‑negotiable rules, explicit rationale if not obvious.
-   - Ensure Governance section lists amendment procedure, versioning policy, and compliance review expectations.
 
-4. Consistency propagation checklist (convert prior checklist into active validations):
-   - Read `.specify/templates/plan-template.md` and ensure any "Constitution Check" or rules align with updated principles.
-   - Read `.specify/templates/spec-template.md` for scope/requirements alignment—update if constitution adds/removes mandatory sections or constraints.
-   - Read `.specify/templates/tasks-template.md` and ensure task categorization reflects new or removed principle-driven task types (e.g., observability, versioning, testing discipline).
-   - Read each command file in `.specify/templates/commands/*.md` (including this one) to verify no outdated references (agent-specific names like CLAUDE only) remain when generic guidance is required.
-   - Read any runtime guidance docs (e.g., `README.md`, `docs/quickstart.md`, or agent-specific guidance files if present). Update references to principles changed.
+If .specify/memory/constitution.md does not exist, copy it from .specify/templates/constitution-template.md before editing.
 
-5. Produce a Sync Impact Report (prepend as an HTML comment at top of the constitution file after update):
-   - Version change: old → new
-   - List of modified principles (old title → new title if renamed)
-   - Added sections
-   - Removed sections
-   - Templates requiring updates (✅ updated / ⚠ pending) with file paths
-   - Follow-up TODOs if any placeholders intentionally deferred.
 
-6. Validation before final output:
-   - No remaining unexplained bracket tokens.
-   - Version line matches report.
-   - Dates ISO format YYYY-MM-DD.
-   - Principles are declarative, testable, and free of vague language ("should" → replace with MUST/SHOULD rationale where appropriate).
+Execution Flow
+1) Load Constitution
 
-7. Write the completed constitution back to `.specify/memory/constitution.md` (overwrite).
+Read .specify/memory/constitution.md.
+If missing, copy from .specify/templates/constitution-template.md.
+Parse and collect any existing placeholders of the form [ALL_CAPS_IDENTIFIER].
 
-8. Output a final summary to the user with:
-   - New version and bump rationale.
-   - Any files flagged for manual follow-up.
-   - Suggested commit message (e.g., `docs: amend constitution to vX.Y.Z (principle additions + governance update)`).
+2) Resolve Placeholders & Inputs
 
-Formatting & Style Requirements:
+Use user input or repo context (README, prior constitution versions) to fill:
 
-- Use Markdown headings exactly as in the template (do not demote/promote levels).
-- Wrap long rationale lines to keep readability (<100 chars ideally) but do not hard enforce with awkward breaks.
-- Keep a single blank line between sections.
-- Avoid trailing whitespace.
+[PROJECT_NAME] ← project_name or infer from repo.
+RATIFICATION_DATE ← ratified_on or keep existing (else TODO(RATIFICATION_DATE)).
+LAST_AMENDED_DATE ← today only if you change content; else keep as is.
+CONSTITUTION_VERSION (semantic versioning):
 
-If the user supplies partial updates (e.g., only one principle revision), still perform validation and version decision steps.
+MAJOR → breaking governance/principle removals or redefinitions.
+MINOR → new principle/section or materially expanded guidance.
+PATCH → wording/clarity/typo, no semantic change.
 
-If critical info missing (e.g., ratification date truly unknown), insert `TODO(<FIELD_NAME>): explanation` and include in the Sync Impact Report under deferred items.
 
-Do not create a new template; always operate on the existing `.specify/memory/constitution.md` file.
+
+
+If ambiguous, state your bump rationale before finalizing.
+
+3) Draft Updated Content (Simple English, Base + Addenda)
+
+
+Replace placeholders—no unresolved bracket tokens remain.
+
+
+Keep headings from the template. Remove instructional comments unless keep_comments: true.
+
+
+Ensure these Core Principles exist and are non‑negotiable:
+Frontend
+
+Next.js (App Router) + TypeScript (TSX) + TailwindCSS + shadcn/ui.
+Use a src/ root folder for app code.
+Typed React code; avoid any unless justified.
+
+BFF
+
+FastAPI (async).
+Required folders: router/ (I/O validation), service/ (business logic only),
+repository/ (DB only), client/ (external HTTP only, with timeouts + retries).
+No business logic outside service/.
+
+Backend
+
+FastAPI (async).
+Same four layers and rules as BFF.
+
+Database
+
+PostgreSQL is the default for all features.
+MongoDB allowed only with a written reason and:
+
+collection schemas, a few sample documents, planned indexes (single/compound/TTL).
+
+
+Put DSNs in environment variables (no creds in code). Use pooling.
+
+Contract‑First
+
+Define API contracts before coding.
+Use OpenAPI + Pydantic on FastAPI; Zod on FE when needed.
+Document error shapes and version rules.
+No breaking changes without a version bump and plan.
+
+Testing
+
+FE: component + integration tests.
+BFF/BE: unit + service + repository + contract tests.
+A feature is not done until tests exist and pass.
+
+Observability & Logging
+
+OTel tracing (FE → BFF → BE).
+JSON logs with required keys: trace_id, service_name, request_path, error_type.
+
+Security & Reliability
+
+JWT with short‑lived tokens; authorization in the BFF.
+No secrets in repo; use env or secret manager.
+All HTTP calls have timeout + retry + standard error format.
+
+Performance
+
+FE LCP < 2.5s.
+Internal APIs p95 < 200 ms; public APIs p95 < 500 ms.
+
+Simplicity & Versioning
+
+Keep designs simple; avoid extra complexity.
+Use MAJOR.MINOR.PATCH; breaking changes require a major bump + migration plan.
+
+
+
+Add Project‑Specific Additional Principles (Optional):
+
+
+Append items from add_principles[] (title + details).
+
+
+Mark the section with append‑only anchors:
+
+<!-- FS:ADDENDA:BEGIN -->
+... (project-specific principles go here; never edit base sections above) ...
+<!-- FS:ADDENDA:END -->
+
+4) Propagation: Keep Templates in Sync
+
+Open .specify/templates/plan-template.md and VERIFY it enforces:
+
+Frontend stack and src/ layout.
+BFF/BE layered folders and responsibilities.
+DB section with PostgreSQL default; MongoDB justification with schemas/samples/indexes.
+Contract‑first content (OpenAPI/Pydantic/Zod).
+Observability (OTel) + JSON logging keys.
+Testing categories + performance targets.
+
+
+Open .specify/templates/spec-template.md and require:
+
+DB choice (+ MongoDB reason if chosen).
+Frontend/Backend approach aligned to Constitution.
+Acceptance criteria, test plan, perf and security notes.
+
+
+Open .specify/templates/tasks-template.md and ensure it creates tasks for:
+
+Next.js + Tailwind + shadcn/ui under src/.
+FastAPI layered skeleton (router/service/repository/client).
+DB models + migrations (Postgres) or schema/index docs (Mongo).
+OpenAPI/Pydantic/Zod contracts; OTel setup; JSON logging keys.
+Unit/service/repository/contract tests; FE component/integration tests.
+
+
+Review every command in .specify/templates/commands/*.md and remove stale agent‑specific text; keep guidance generic.
+
+5) Sync Impact Report (prepend as HTML comment at the top of the constitution)
+
+Version: X.Y.Z(old) → X.Y.Z(new)
+Modified principles (old title → new title if renamed)
+Added/Removed sections
+Templates needing updates with status:
+
+.specify/templates/plan-template.md (✅ updated / ⚠ pending)
+.specify/templates/spec-template.md (✅/⚠)
+.specify/templates/tasks-template.md (✅/⚠)
+Commands under .specify/templates/commands/*.md (list)
+
+
+Deferred TODOs (e.g., TODO(RATIFICATION_DATE), pending MongoDB rationale)
+
+6) Validation Gates (fail if any check fails)
+
+No unresolved [PLACEHOLDER] tokens remain.
+Core stack assertions present (exact matches):
+
+Next.js, TypeScript, TSX, Tailwind, shadcn/ui, src/.
+FastAPI, router/, service/, repository/, client/, async.
+PostgreSQL (default), MongoDB (with justification language).
+OpenTelemetry, trace_id, service_name, request_path, error_type.
+component tests, integration tests, unit tests, contract tests.
+
+
+Dates are ISO YYYY-MM-DD.
+Version line matches the Sync Impact Report.
+Language uses MUST/REQUIRED where non‑negotiable (avoid weak “should”).
+
+7) Write File
+
+Overwrite .specify/memory/constitution.md with the final content.
+
+8) Final Output to User
+
+
+New version and bump rationale (MAJOR/MINOR/PATCH).
+
+
+Any files marked ⚠ pending manual edits.
+
+
+Suggested commit message:
+docs: amend constitution to vX.Y.Z (enforce core stack + addenda support)
+
+Notes for the Agent
+
+Treat the base core principles as immutable company standards.
+Use the FS:ADDENDA block for project‑level additions only (append‑only).
+If asked to remove a base principle, warn that this is a MAJOR governance change.
+If db_choice: mongodb is provided without db_reason, halt with an actionable error asking for the reason, schemas, sample documents, and an index plan.
+Keep the document short, clear, and testable. Prefer MUST/REQUIRED over should, unless you add a clear rationale.
+
+
+Formatting & Style Requirements
+
+Keep original Markdown heading levels (do not demote/promote).
+Wrap long lines for readability (≈100 chars) but avoid awkward breaks.
+Keep one blank line between sections.
+Avoid trailing spaces.
+Use bullet lists when they make rules easier to read.
