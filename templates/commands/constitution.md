@@ -212,4 +212,3 @@ docs: amend constitution to vX.Y.Z (enforce core stack + addenda support)
 - Leave one blank line between sections
 - Avoid trailing spaces
 - Use bullet lists for clarity
-
