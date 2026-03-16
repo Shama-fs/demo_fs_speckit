@@ -247,3 +247,5 @@ Wrap long lines for readability (≈100 chars) but avoid awkward breaks.
 Keep one blank line between sections.
 Avoid trailing spaces.
 Use bullet lists when they make rules easier to read.
+
+Change(mandaar).
