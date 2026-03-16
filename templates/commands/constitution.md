@@ -163,3 +163,53 @@ Each template MUST reflect:
 
 Add at top of constitution as HTML comment:
 
+### 6) Validation Gates
+
+The update MUST fail if:
+
+- ANY `[PLACEHOLDER]` remains
+- Missing required stack keywords:
+  - Next.js, TypeScript, TSX, Tailwind, shadcn/ui, src/
+  - FastAPI, async, router/, service/, repository/, client/
+  - PostgreSQL, MongoDB (with justification)
+  - OpenTelemetry, trace_id, service_name, request_path, error_type
+  - component tests, integration tests, unit tests, contract tests
+- Dates not in `YYYY-MM-DD`
+- Version mismatch between header + report
+- Weak language ("should") used instead of MUST/REQUIRED where needed
+
+### 7) Write File
+Overwrite `.specify/memory/constitution.md`.
+
+### 8) Final Output
+
+Return:
+- New version
+- Version bump rationale
+- Pending manual edits (if any)
+- Suggested commit message:
+
+
+docs: amend constitution to vX.Y.Z (enforce core stack + addenda support)
+
+---
+
+## Notes for the Agent
+
+- Base principles are **immutable**
+- Addenda section is **append-only**
+- Removing base rules = **MAJOR** version bump
+- MongoDB requires full justification
+- Prefer MUST/REQUIRED for enforceable rules
+- Keep the document simple + testable
+
+---
+
+## Formatting Rules
+
+- Keep original heading levels
+- Wrap long lines (~100 chars)
+- Leave one blank line between sections
+- Avoid trailing spaces
+- Use bullet lists for clarity
+
