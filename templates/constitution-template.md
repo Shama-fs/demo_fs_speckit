@@ -19,7 +19,7 @@
   - `service/` → business logic only  
   - `repository/` → DB reads/writes only  
   - `client/` → external API calls (must include timeouts + retries)
-- No business logic outside `service/`
+
 
 ---
 
@@ -46,7 +46,6 @@
 ### V. Contract-First API Development
 - Define API contracts before coding
 - Use OpenAPI + Pydantic on FastAPI
-- Use Zod schemas on the frontend when needed
 - Document error shapes and version rules
 - No breaking changes without version increments
 
@@ -85,20 +84,6 @@ A feature is not complete until tests exist and pass.
   - timeout  
   - retry logic  
   - a standard error format
-
----
-
-### IX. Performance Standards
-- FE LCP Goal: < 2.5s  
-- Internal APIs: p95 < 200 ms  
-- Public APIs: p95 < 500 ms  
-
----
-
-### X. Simplicity & Versioning
-- Keep the solution simple; avoid unnecessary complexity
-- Use MAJOR.MINOR.PATCH for versioning
-- Breaking changes → require a major version bump + migration plan
 
 ---
 

@@ -65,7 +65,6 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Contract‑First (REQUIRED)
 - API contracts MUST be defined before coding
 - FastAPI: OpenAPI + Pydantic
-- Frontend: Zod (when needed)
 - Define error shapes
 - No breaking changes without version bump + migration plan
 
@@ -88,14 +87,8 @@ You **MUST** consider the user input before proceeding (if not empty).
 - No secrets in repo
 - Every HTTP call MUST have timeout + retry
 
-### Performance (REQUIRED)
-- FE LCP < 2.5s
-- Internal APIs p95 < 200 ms
-- Public APIs p95 < 500 ms
 
-### Simplicity & Versioning
-- Keep design simple
-- Use semantic versioning (MAJOR.MINOR.PATCH)
+
 
 ---
 
