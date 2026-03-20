@@ -50,3 +50,10 @@ docs/dev
 .specify/extensions/.cache/
 .specify/extensions/.backup/
 .specify/extensions/*/local-config.yml
+
+# Local Spec-Kit init output folders (do not commit)
+test-project/
+*-project/
+
+# Local release build output (do not commit)
+.genreleases/
