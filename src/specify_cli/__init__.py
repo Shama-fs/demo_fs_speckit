@@ -819,8 +819,8 @@ def merge_json_files(existing_path: Path, new_content: Any, verbose: bool = Fals
     return merged
 
 def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
-    repo_owner = "github"
-    repo_name = "spec-kit"
+    repo_owner = "Shama-fs"
+    repo_name = "demo_fs_speckit"
     if client is None:
         client = httpx.Client(verify=ssl_context)
 
