@@ -51,7 +51,7 @@ Choose your preferred installation method:
 Install once and use everywhere:
 
 ```bash
-uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+uv tool install specify-cli --from git+https://github.com/Shama-fs/demo_fs_speckit.git
 ```
 
 Then use the tool directly:
@@ -72,7 +72,7 @@ specify check
 To upgrade Specify, see the [Upgrade Guide](./docs/upgrade.md) for detailed instructions. Quick upgrade:
 
 ```bash
-uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git
+uv tool install specify-cli --force --from git+https://github.com/Shama-fs/demo_fs_speckit.git
 ```
 
 #### Option 2: One-time Usage

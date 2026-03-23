@@ -65,13 +65,7 @@ if (-not (Test-FeatureBranch -Branch $paths.CURRENT_BRANCH -HasGit:$paths.HAS_GI
 
 # FutureStandard: validate required manual installations (Node/Python/VS Code/Git)
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$fsCheck = Join-Path $scriptDir "techstack_check.ps1"
 
-if (Test-Path $fsCheck) {
-    & $fsCheck
-} else {
-    Write-Warning "FutureStandard tech stack check not found: $fsCheck (skipping)"
-}
 
 # If paths-only mode, output paths and exit (support combined -Json -PathsOnly)
 if ($PathsOnly) {

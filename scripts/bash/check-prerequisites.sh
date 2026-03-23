@@ -82,8 +82,7 @@ source "$SCRIPT_DIR/common.sh"
 eval $(get_feature_paths)
 check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 
-# FutureStandard: validate required manual installations (Node/Python/VS Code/Git/etc.)
-"$SCRIPT_DIR/techstack_check.sh"
+
 
 # If paths-only mode, output paths and exit (support JSON + paths-only combined)
 if $PATHS_ONLY; then
