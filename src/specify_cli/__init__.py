@@ -714,8 +714,8 @@ def merge_json_files(existing_path: Path, new_content: dict, verbose: bool = Fal
     return merged
 
 def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
-    repo_owner = "github"
-    repo_name = "spec-kit"
+    repo_owner = "Shama-fs"
+    repo_name = "demo_fs_speckit"
     if client is None:
         client = httpx.Client(verify=ssl_context)
 
@@ -826,9 +826,6 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         "asset_url": download_url
     }
     return zip_path, metadata
-
-if not skip_techstack_check:
-    _fs_techstack_preflight(require_frontend=True, require_vscode=False)
 
 
 def download_and_extract_template(project_path: Path, ai_assistant: str, script_type: str, is_current_dir: bool = False, *, verbose: bool = True, tracker: StepTracker | None = None, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Path:
@@ -1261,9 +1258,7 @@ def install_ai_skills(project_path: Path, selected_ai: str, tracker: StepTracker
 
     return installed_count > 0 or skipped_count > 0
 
-import re
-import shutil
-import subprocess
+
 
 def _fs_parse_version(text: str):
     m = re.search(r"(\d+)\.(\d+)\.(\d+)", text)
@@ -1310,9 +1305,9 @@ def _fs_techstack_preflight(require_frontend: bool = True, require_vscode: bool 
             if not v or v < (18, 0, 0):
                 errors.append(f"Node.js >= 18.0.0 required. Found: {vtxt}")
 
-        if not (shutil.which("npm") or shutil.which("pnpm")):
+        if not (shutil.which("npm")):
             errors.append(
-                "npm or pnpm not found. npm normally ships with Node.js; reinstall/repair Node.js or enable pnpm."
+                "npm not found. npm normally ships with Node.js; reinstall/repair Node.js or enable pnpm."
             )
 
     # --- VS Code (optional policy) ---
@@ -1555,7 +1550,7 @@ def init(
             verify = not skip_tls
             local_ssl_context = ssl_context if verify else False
             local_client = httpx.Client(verify=local_ssl_context)
-
+            _fs_techstack_preflight(require_frontend=True, require_vscode=False)
             download_and_extract_template(project_path, selected_ai, selected_script, here, verbose=False, tracker=tracker, client=local_client, debug=debug, github_token=github_token)
 
             # For generic agent, rename placeholder directory to user-specified path
