@@ -55,7 +55,7 @@ import truststore
 from datetime import datetime, timezone
  
  #For Techstack check
- import re,shutil,subprocess
+import re,shutil,subprocess
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
