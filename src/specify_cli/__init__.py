@@ -53,6 +53,9 @@ import readchar
 import ssl
 import truststore
 from datetime import datetime, timezone
+ 
+ #For Techstack check
+ import re,shutil,subprocess
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
@@ -826,6 +829,7 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         "asset_url": download_url
     }
     return zip_path, metadata
+
 
 
 def download_and_extract_template(project_path: Path, ai_assistant: str, script_type: str, is_current_dir: bool = False, *, verbose: bool = True, tracker: StepTracker | None = None, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Path:
