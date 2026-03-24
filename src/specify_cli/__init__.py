@@ -1522,11 +1522,13 @@ def init(
 
     tracker.add("precheck", "Check required tools")
     tracker.complete("precheck", "ok")
+    
     tracker.add("ai-select", "Select AI assistant")
     tracker.complete("ai-select", f"{selected_ai}")
     tracker.add("script-select", "Select script type")
     tracker.complete("script-select", selected_script)
     for key, label in [
+         ("techstack", "Validate tech stack"),
         ("fetch", "Fetch latest release"),
         ("download", "Download template"),
         ("extract", "Extract template"),
@@ -1554,7 +1556,16 @@ def init(
             verify = not skip_tls
             local_ssl_context = ssl_context if verify else False
             local_client = httpx.Client(verify=local_ssl_context)
-            _fs_techstack_preflight(require_frontend=True, require_vscode=False)
+            try:
+                tracker.start("techstack")
+                _fs_techstack_preflight(require_frontend=True, require_vscode=False)
+                tracker.complete("techstack", "ok")
+            except Exception as e:
+                tracker.error("techstack", "failed")
+                 
+                 # Re-raise so your existing except block handles panels + cleanup
+                raise
+
             download_and_extract_template(project_path, selected_ai, selected_script, here, verbose=False, tracker=tracker, client=local_client, debug=debug, github_token=github_token)
 
             # For generic agent, rename placeholder directory to user-specified path
