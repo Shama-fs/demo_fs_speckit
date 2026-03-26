@@ -1280,10 +1280,6 @@ def _fs_techstack_preflight(require_frontend: bool = True, require_vscode: bool 
     """
     errors: list[str] = []
 
-    # --- Git ---
-    if not shutil.which("git"):
-        errors.append("Git not found. Install Git and ensure it is on PATH.")
-
     # --- Python ---
     py = shutil.which("python") or shutil.which("python3")
     if not py:
@@ -1314,14 +1310,7 @@ def _fs_techstack_preflight(require_frontend: bool = True, require_vscode: bool 
                 "npm not found. npm normally ships with Node.js; reinstall/repair Node.js or enable pnpm."
             )
 
-    # --- VS Code (optional policy) ---
-    # Many machines have VS Code installed but `code` isn't on PATH.
-    if require_vscode and not shutil.which("code"):
-        errors.append(
-            "VS Code 'code' command not found in PATH. Enable it in VS Code: "
-            "'Shell Command: Install code command in PATH'."
-        )
-
+   
     if errors:
         raise RuntimeError(
             "FutureStandard tech stack validation failed:\n" + "\n".join(f"- {e}" for e in errors)
@@ -1794,8 +1783,8 @@ def version():
     repo_name = "demo_fs_speckit"
     api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
     
-    template_version = "unknown"
-    release_date = "unknown"
+    template_version = "v0.1.3
+    release_date = "24-03-2026"
     
     try:
         response = client.get(

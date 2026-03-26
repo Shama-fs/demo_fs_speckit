@@ -282,6 +282,21 @@ specify init --here --ai gemini --ai-skills
 specify check
 ```
 
+### Logging and Observability
+
+The CLI now emits structured operational logs to stderr so diagnostics do not interfere with the Rich terminal UI on stdout.
+
+- `SPECIFY_LOG_LEVEL`: override the log level (`WARNING`, `INFO`, `DEBUG`, etc.)
+- `SPECIFY_LOG_FORMAT`: force `console` or `json`
+- `SPECIFY_ENV`: override environment detection (`local` keeps console logs, other values default to JSON)
+
+Examples:
+
+```bash
+SPECIFY_LOG_LEVEL=INFO specify init my-project --ai copilot
+SPECIFY_LOG_FORMAT=json SPECIFY_LOG_LEVEL=DEBUG specify check
+```
+
 ### Available Slash Commands
 
 After running `specify init`, your AI coding agent will have access to these slash commands for structured development:

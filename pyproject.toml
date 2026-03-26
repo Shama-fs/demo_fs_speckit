@@ -4,6 +4,7 @@ version = "0.1.3"
 description = "Specify CLI, part of GitHub Spec Kit. A tool to bootstrap your projects for Spec-Driven Development (SDD)."
 requires-python = ">=3.11"
 dependencies = [
+    "structlog>=24.4",
     "typer",
     "click>=8.1",
     "rich",
